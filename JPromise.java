@@ -11,18 +11,18 @@ import java.util.concurrent.Executors;
 
 /**
  * @author huangshihai@chinaedu.com
- */
+ */
 
-public final class DPromise {
+public final class JPromise {
 
     private ExecutorService cachedThreadPool = Executors.newCachedThreadPool();
 
     private List<Fun> funs = new ArrayList<>();
 
-    public DPromise() {
+    public JPromise() {
     }
 
-    public DPromise(Fun fun) {
+    public JPromise(Fun fun) {
         then(fun);
     }
 
@@ -37,13 +37,13 @@ public final class DPromise {
         cachedThreadPool.execute(new Runnable() {
             @Override
             public void run() {
-                fun.run(DPromise.this, args);
+                fun.run(JPromise.this, args);
             }
         });
         return fun;
     }
 
-    public synchronized DPromise then(Fun fun) {
+    public synchronized JPromise then(Fun fun) {
         checkShutdown();
         funs.add(fun);
         return this;
@@ -51,7 +51,7 @@ public final class DPromise {
 
     private void checkShutdown() {
         if (isShutdown()) {
-            throw new JPromiseException("DPromise is shutdown.");
+            throw new JPromiseException("JPromise is shutdown.");
         }
     }
 
@@ -75,15 +75,15 @@ public final class DPromise {
 
     //For test
     public static void main(String... args) {
-        new DPromise(new Fun() {
+        new JPromise(new Fun() {
 
             @Override
-            public void run(final DPromise promise, final Object... args) {
+            public void run(final JPromise promise, final Object... args) {
                 promise.resolve(0);
             }
         }).then(new Fun() {
             @Override
-            public void run(final DPromise promise, final Object... args) {
+            public void run(final JPromise promise, final Object... args) {
                 new Timer().schedule(new TimerTask() {
                     @Override
                     public void run() {
@@ -95,7 +95,7 @@ public final class DPromise {
             }
         }).then(new Fun() {
             @Override
-            public void run(final DPromise promise, final Object... args) {
+            public void run(final JPromise promise, final Object... args) {
                 new Timer().schedule(new TimerTask() {
                     @Override
                     public void run() {
@@ -107,7 +107,7 @@ public final class DPromise {
             }
         }).then(new Fun() {
             @Override
-            public void run(final DPromise promise, final Object... args) {
+            public void run(final JPromise promise, final Object... args) {
                 new Timer().schedule(new TimerTask() {
                     @Override
                     public void run() {
@@ -119,7 +119,7 @@ public final class DPromise {
             }
         }).then(new Fun() {
             @Override
-            public void run(final DPromise promise, final Object... args) {
+            public void run(final JPromise promise, final Object... args) {
                 new Timer().schedule(new TimerTask() {
                     @Override
                     public void run() {
@@ -132,7 +132,7 @@ public final class DPromise {
     }
 
     public interface Fun {
-        void run(final DPromise promise, final Object... args);
+        void run(final JPromise promise, final Object... args);
     }
 
     public static class JPromiseException extends RuntimeException {
